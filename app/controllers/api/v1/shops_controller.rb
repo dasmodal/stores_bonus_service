@@ -14,7 +14,7 @@ module Api
       end
 
       def create
-        shop = Shop.new(name: params[:name])
+        shop = Shop.new(shop_params)
 
         if shop.save
           render json: shop, status: :created
@@ -24,12 +24,20 @@ module Api
       def update
         shop = Shop.find(params[:id])
 
-        if shop.update(name: params[:name])
+        if shop.update(shop_params)
           render json: shop, status: :ok
         end
       end
 
       def buy
+      end
+
+      private
+
+      def shop_params
+        params.require(:data).
+               require(:attributes).
+               permit(:name)
       end
     end
   end
