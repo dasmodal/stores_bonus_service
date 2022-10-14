@@ -30,6 +30,12 @@ module Api
       end
 
       def buy
+        buy_info = JSON.parse(request.body.string)
+        buy_info['shop_id'] = params[:id].to_i
+
+        buy_result_json = BuyProcess.call(buy_info)
+
+        render json: buy_result_json
       end
 
       private
