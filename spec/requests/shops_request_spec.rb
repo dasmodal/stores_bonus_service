@@ -26,7 +26,7 @@ RSpec.describe 'Shops', type: :request do
         end
         
         it 'not changes amount_due' do
-          expect(json_body['data']['amount_due']).to eq(90)
+          expect(json_body['data']['amount_due']).to eq(500)
         end
       end
 
