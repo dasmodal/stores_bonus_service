@@ -11,7 +11,7 @@ class BuyProcess
 
     buy_result =
       if buy_info['use_bonuses']
-        spend_bonuses()
+        spend_bonuses(card, buy_info['amount'])
       else
         accumulate_bonuses(card, buy_info['amount'])
       end
@@ -21,7 +21,22 @@ class BuyProcess
 
   private
 
-  def spend_bonuses()
+  def spend_bonuses(card, amount)
+    if card.user.negative_balance
+      #TODO
+    else
+      if amount >= card.bonuses
+        amount_due = amount - card.bonuses
+        card.update(bonuses: 0)
+
+        [0, amount_due]
+      else
+        new_bonuses_value = card.bonuses - amount
+        card.update(bonuses: new_bonuses_value)
+
+        [card.bonuses, 0]
+      end
+    end
   end
 
   def accumulate_bonuses(card, amount)
