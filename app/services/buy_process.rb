@@ -23,7 +23,20 @@ class BuyProcess
 
   def spend_bonuses(card, amount)
     if card.user.negative_balance
-      #TODO
+      sum_all_bonuses = card.user.card.pluck(:bonuses).sum
+
+      if amount >= sum_all_bonuses
+        new_bonuses = card.bonuses - sum_all_bonuses
+        amount_due = amount - sum_all_bonuses
+        card.update(bonuses: new_bonuses)
+
+        [new_bonuses, amount_due]
+      else
+        new_bonuses = card.bonuses - amount
+        card.update(bonuses: new_bonuses)
+
+        [card.bonuses, 0]
+      end
     else
       if amount >= card.bonuses
         amount_due = amount - card.bonuses
