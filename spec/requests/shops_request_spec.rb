@@ -146,7 +146,6 @@ RSpec.describe 'Shops', type: :request do
           end
 
           it 'returns success true' do
-            binding.pry
             expect(json_body['success']).to be true
           end
 
