@@ -16,7 +16,7 @@ class BuyProcess
         accumulate_bonuses(card, buy_info['amount'])
       end
 
-    prepare_response_json(buy_result)
+    { 'amount_due': "#{buy_result[1]}", 'remaining_bonus': "#{buy_result[0]}" }
   end
 
   private
@@ -61,16 +61,5 @@ class BuyProcess
 
       [new_bonuses, amount]
     end
-  end
-
-  def prepare_response_json(buy_result)
-    data = { 'amount_due': "#{buy_result[1]}", 'remaining_bonus': "#{buy_result[0]}" }
-
-    {
-      'success': true, 'data': {
-      'amount_due': buy_result[1],
-      'remaining_bonus': buy_result[0]
-      }
-    }
   end
 end
