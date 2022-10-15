@@ -60,7 +60,7 @@ RSpec.describe 'Shops', type: :request do
           before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
           let(:params) do
             {
-              use_bonuses: false,
+              use_bonuses: true,
               amount: 500,
               user_id: "#{card.user.id}"
             }
@@ -85,7 +85,7 @@ RSpec.describe 'Shops', type: :request do
           context 'when amount more or equal then user has bonuses' do
             let(:params) do
               {
-                use_bonuses: false,
+                use_bonuses: true,
                 amount: 850,
                 user_id: "#{card.user.id}"
               }
@@ -107,7 +107,7 @@ RSpec.describe 'Shops', type: :request do
           context 'when amount less then user has bonuses' do
             let(:params) do
               {
-                use_bonuses: false,
+                use_bonuses: true,
                 amount: 170,
                 user_id: "#{card.user.id}"
               }
