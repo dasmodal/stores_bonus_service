@@ -128,7 +128,70 @@ RSpec.describe 'Shops', type: :request do
         end
       end
 
-      context 'when negative_balance option is true' do ##TODO
+      context 'when negative_balance option is true' do
+        let(:another_shop) { FactoryBot.create(:shop) }
+        let!(:another_card) { FactoryBot.create(:card, shop_id: another_shop.id, user_id: card.user.id) }
+        before do
+          card.user.update(negative_balance: true)
+          post buy_api_v1_shop_path(card.shop.id), params: params, as: :json
+        end
+
+        context 'when user has bonuses' do
+          let(:params) do
+            {
+              use_bonuses: true,
+              amount: 850,
+              user_id: "#{card.user.id}"
+            }
+          end
+
+          it 'returns success true' do
+            expect(json_body['success']).to be true
+          end
+
+          it 'spends bonuses from card' do
+            expect(json_body['data']['remaining_bonus']).to eq(-350)
+          end
+
+          it 'returns some amount_due' do
+            expect(json_body['data']['amount_due']).to eq(0)
+          end
+        end
+
+        context 'when user has bonusess only on another card' do
+          before { card.update(bonuses: 0)}
+
+          it 'returns success true' do
+            expect(json_body['success']).to be true
+          end
+
+          it 'spends bonuses from card' do
+            expect(json_body['data']['remaining_bonus']).to eq(-500)
+          end
+
+          it 'returns some amount_due' do
+            expect(json_body['data']['amount_due']).to eq(350)
+          end
+        end
+
+        context 'when user has not bonuses on all cards' do
+          before do
+            card.update(bonuses: 0)
+            another_card.update(bonuses: 0)
+          end
+
+          it 'returns success true' do
+            expect(json_body['success']).to be true
+          end
+
+          it 'not spends bonuses from card' do
+            expect(json_body['data']['remaining_bonus']).to eq(0)
+          end
+
+          it 'not changes amount_due' do
+            expect(json_body['data']['amount_due']).to eq(850)
+          end
+        end
       end
     end
   end
