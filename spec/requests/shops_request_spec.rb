@@ -26,7 +26,7 @@ RSpec.describe 'Shops', type: :request do
         end
         
         it 'not changes amount_due' do
-          expect(json_body['data']['amount_due']).to eq(90)
+          expect(json_body['data']['amount_due']).to eq(500)
         end
       end
 
@@ -60,7 +60,7 @@ RSpec.describe 'Shops', type: :request do
           before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
           let(:params) do
             {
-              use_bonuses: false,
+              use_bonuses: true,
               amount: 500,
               user_id: "#{card.user.id}"
             }
@@ -85,7 +85,7 @@ RSpec.describe 'Shops', type: :request do
           context 'when amount more or equal then user has bonuses' do
             let(:params) do
               {
-                use_bonuses: false,
+                use_bonuses: true,
                 amount: 850,
                 user_id: "#{card.user.id}"
               }
@@ -107,7 +107,7 @@ RSpec.describe 'Shops', type: :request do
           context 'when amount less then user has bonuses' do
             let(:params) do
               {
-                use_bonuses: false,
+                use_bonuses: true,
                 amount: 170,
                 user_id: "#{card.user.id}"
               }
@@ -130,20 +130,18 @@ RSpec.describe 'Shops', type: :request do
 
       context 'when negative_balance option is true' do
         let(:another_shop) { FactoryBot.create(:shop) }
-        let!(:another_card) { FactoryBot.create(:card, shop_id: another_shop.id, user_id: card.user.id) }
-        before do
-          card.user.update(negative_balance: true)
-          post buy_api_v1_shop_path(card.shop.id), params: params, as: :json
+        let(:params) do
+          {
+            use_bonuses: true,
+            amount: 850,
+            user_id: "#{card.user.id}"
+          }
         end
+        let!(:another_card) { FactoryBot.create(:card, shop_id: another_shop.id, user_id: card.user.id) }
+        before { card.user.update(negative_balance: true) }
 
         context 'when user has bonuses' do
-          let(:params) do
-            {
-              use_bonuses: true,
-              amount: 850,
-              user_id: "#{card.user.id}"
-            }
-          end
+          before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
 
           it 'returns success true' do
             expect(json_body['success']).to be true
@@ -159,7 +157,10 @@ RSpec.describe 'Shops', type: :request do
         end
 
         context 'when user has bonusess only on another card' do
-          before { card.update(bonuses: 0)}
+          before do
+            card.update(bonuses: 0)
+            post buy_api_v1_shop_path(card.shop.id), params: params, as: :json
+          end
 
           it 'returns success true' do
             expect(json_body['success']).to be true
@@ -178,6 +179,7 @@ RSpec.describe 'Shops', type: :request do
           before do
             card.update(bonuses: 0)
             another_card.update(bonuses: 0)
+            post buy_api_v1_shop_path(card.shop.id), params: params, as: :json
           end
 
           it 'returns success true' do
