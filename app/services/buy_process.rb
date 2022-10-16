@@ -16,7 +16,9 @@ class BuyProcess
         accumulate_bonuses(card, buy_info['amount'])
       end
 
-    { 'amount_due': "#{buy_result[1]}", 'remaining_bonus': "#{buy_result[0]}" }
+    { 'success': true,
+      'data': { 'amount_due': buy_result[1], 'remaining_bonus': buy_result[0] }
+    }
   end
 
   private
