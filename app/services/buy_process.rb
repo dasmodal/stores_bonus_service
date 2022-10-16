@@ -11,7 +11,7 @@ class BuyProcess
 
     buy_result =
       if buy_info['use_bonuses']
-        spend_bonuses(card, buy_info['amount'])
+        spend_bonuses(card, buy_info['amount'].ceil)
       else
         accumulate_bonuses(card, buy_info['amount'])
       end
@@ -58,7 +58,7 @@ class BuyProcess
     if amount < 100
       [card.bonuses, amount]
     else
-      new_bonuses = card.bonuses + (amount * 0.01)
+      new_bonuses = card.bonuses + (amount * 0.01).to_i
       card.update(bonuses: new_bonuses)
 
       [new_bonuses, amount]
