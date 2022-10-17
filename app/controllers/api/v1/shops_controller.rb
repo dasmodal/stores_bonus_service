@@ -2,9 +2,14 @@ module Api
   module V1
     class ShopsController < ApplicationController
       def index
-        shops = Shop.all
+        if params.dig(:filter)
+          shops = User.find(params.dig(:filter, :user_id)).shops if params.dig(:filter, :user_id)
+          shop = Card.find(params.dig(:filter, :card_id)).shop if params.dig(:filter, :card_id)
+        else
+          shops = Shop.all
+        end
 
-        render json: shops, status: :ok
+        render json: shops || shop, status: :ok
       end
 
       def show
