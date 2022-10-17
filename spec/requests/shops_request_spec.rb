@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Shops', type: :request do
@@ -6,14 +8,14 @@ RSpec.describe 'Shops', type: :request do
 
     context 'when user not spend bonuses' do
       let!(:was_user_bonuses) { card.bonuses }
-      before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
+      before { post buy_api_v1_shop_path(card.shop.id), params:, as: :json }
 
       context 'when amount more or equal then 100' do
         let(:params) do
           {
             use_bonuses: false,
             amount: 500,
-            user_id: "#{card.user.id}"
+            user_id: card.user.id.to_s
           }
         end
 
@@ -24,7 +26,7 @@ RSpec.describe 'Shops', type: :request do
         it 'increases user bonuses' do
           expect(json_body['data']['remaining_bonus']).to eq(505)
         end
-        
+
         it 'not changes amount_due' do
           expect(json_body['data']['amount_due']).to eq(500)
         end
@@ -35,7 +37,7 @@ RSpec.describe 'Shops', type: :request do
           {
             use_bonuses: false,
             amount: 90,
-            user_id: "#{card.user.id}"
+            user_id: card.user.id.to_s
           }
         end
 
@@ -57,12 +59,12 @@ RSpec.describe 'Shops', type: :request do
       context 'when negative_balance option is false' do
         context 'when user has not bonuses' do
           before { card.update(bonuses: 0) }
-          before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
+          before { post buy_api_v1_shop_path(card.shop.id), params:, as: :json }
           let(:params) do
             {
               use_bonuses: true,
               amount: 500,
-              user_id: "#{card.user.id}"
+              user_id: card.user.id.to_s
             }
           end
 
@@ -80,14 +82,14 @@ RSpec.describe 'Shops', type: :request do
         end
 
         context 'when user has bonuses' do
-          before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
+          before { post buy_api_v1_shop_path(card.shop.id), params:, as: :json }
 
           context 'when amount more or equal then user has bonuses' do
             let(:params) do
               {
                 use_bonuses: true,
                 amount: 850,
-                user_id: "#{card.user.id}"
+                user_id: card.user.id.to_s
               }
             end
 
@@ -109,7 +111,7 @@ RSpec.describe 'Shops', type: :request do
               {
                 use_bonuses: true,
                 amount: 170,
-                user_id: "#{card.user.id}"
+                user_id: card.user.id.to_s
               }
             end
 
@@ -134,14 +136,14 @@ RSpec.describe 'Shops', type: :request do
           {
             use_bonuses: true,
             amount: 850,
-            user_id: "#{card.user.id}"
+            user_id: card.user.id.to_s
           }
         end
         let!(:another_card) { FactoryBot.create(:card, shop_id: another_shop.id, user_id: card.user.id) }
         before { card.user.update(negative_balance: true) }
 
         context 'when user has bonuses' do
-          before { post buy_api_v1_shop_path(card.shop.id), params: params, as: :json }
+          before { post buy_api_v1_shop_path(card.shop.id), params:, as: :json }
 
           it 'returns success true' do
             expect(json_body['success']).to be true
@@ -159,7 +161,7 @@ RSpec.describe 'Shops', type: :request do
         context 'when user has bonusess only on another card' do
           before do
             card.update(bonuses: 0)
-            post buy_api_v1_shop_path(card.shop.id), params: params, as: :json
+            post buy_api_v1_shop_path(card.shop.id), params:, as: :json
           end
 
           it 'returns success true' do
@@ -179,7 +181,7 @@ RSpec.describe 'Shops', type: :request do
           before do
             card.update(bonuses: 0)
             another_card.update(bonuses: 0)
-            post buy_api_v1_shop_path(card.shop.id), params: params, as: :json
+            post buy_api_v1_shop_path(card.shop.id), params:, as: :json
           end
 
           it 'returns success true' do

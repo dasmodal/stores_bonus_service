@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class ShopsController < ApplicationController
       def index
-        if params.dig(:filter)
+        if params[:filter]
           shops = User.find(params.dig(:filter, :user_id)).shops if params.dig(:filter, :user_id)
           shop = Card.find(params.dig(:filter, :card_id)).shop if params.dig(:filter, :card_id)
         else
@@ -23,15 +25,15 @@ module Api
 
         if shop.save
           render json: shop, status: :created
+        else
+          render json: shop, status: :unprocessable_entity, serializer: ActiveModel::Serializer::ErrorSerializer
         end
       end
 
       def update
         shop = Shop.find(params[:id])
 
-        if shop.update(shop_params)
-          render json: shop, status: :ok
-        end
+        render json: shop, status: :ok if shop.update(shop_params)
       end
 
       def buy
@@ -46,9 +48,9 @@ module Api
       private
 
       def shop_params
-        params.require(:data).
-               require(:attributes).
-               permit(:name)
+        params.require(:data)
+              .require(:attributes)
+              .permit(:name)
       end
     end
   end

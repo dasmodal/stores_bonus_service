@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class UsersController < ApplicationController
       def index
-        if params.dig(:filter)
+        if params[:filter]
           users = Shop.find(params.dig(:filter, :shop_id)).users if params.dig(:filter, :shop_id)
           user = Card.find(params.dig(:filter, :card_id)).user if params.dig(:filter, :card_id)
         else
@@ -21,31 +23,27 @@ module Api
       def create
         user = User.create(user_params_for_create)
 
-        if user.save
-          render json: user, status: :created
-        end
+        render json: user, status: :created if user.save
       end
 
       def update
         user = User.find(params[:id])
 
-        if user.update(user_params_for_update)
-          render json: user, status: :ok
-        end
+        render json: user, status: :ok if user.update(user_params_for_update)
       end
 
       private
 
       def user_params_for_create
-        params.require(:data).
-               require(:attributes).
-               permit(:email)
+        params.require(:data)
+              .require(:attributes)
+              .permit(:email)
       end
 
       def user_params_for_update
-        params.require(:data).
-               require(:attributes).
-               permit(:email, :negative_balance)
+        params.require(:data)
+              .require(:attributes)
+              .permit(:email, :negative_balance)
       end
     end
   end

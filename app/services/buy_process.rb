@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuyProcess
   def self.call(buy_info)
     new.call(buy_info)
@@ -17,8 +19,7 @@ class BuyProcess
       end
 
     { 'success': true,
-      'data': { 'amount_due': buy_result[1], 'remaining_bonus': buy_result[0] }
-    }
+      'data': { 'amount_due': buy_result[1], 'remaining_bonus': buy_result[0] } }
   end
 
   private
@@ -39,18 +40,16 @@ class BuyProcess
 
         [card.bonuses, 0]
       end
+    elsif amount >= card.bonuses
+      amount_due = amount - card.bonuses
+      card.update(bonuses: 0)
+
+      [0, amount_due]
     else
-      if amount >= card.bonuses
-        amount_due = amount - card.bonuses
-        card.update(bonuses: 0)
+      new_bonuses_value = card.bonuses - amount
+      card.update(bonuses: new_bonuses_value)
 
-        [0, amount_due]
-      else
-        new_bonuses_value = card.bonuses - amount
-        card.update(bonuses: new_bonuses_value)
-
-        [card.bonuses, 0]
-      end
+      [card.bonuses, 0]
     end
   end
 
