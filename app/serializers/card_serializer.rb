@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class CardSerializer < ActiveModel::Serializer
   type :cards
 
   attributes :id, :bonuses
-  
+
   has_one :user do
     include_data false
     link(:related) { api_v1_user_path(id: object.user_id) }

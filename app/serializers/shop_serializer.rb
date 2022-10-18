@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ShopSerializer < ActiveModel::Serializer
   type :shops
 

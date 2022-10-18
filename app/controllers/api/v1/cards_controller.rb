@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class CardsController < ApplicationController
@@ -9,7 +11,7 @@ module Api
 
         meta = bonuses_sum(cards)
 
-        render json: cards, status: :ok, meta: meta
+        render json: cards, status: :ok, meta:
       end
 
       def show
