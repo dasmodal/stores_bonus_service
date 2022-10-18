@@ -23,6 +23,9 @@ module Api
 
         if user.save
           render json: user, status: :created
+        else
+          binding.pry
+          render json: user, status: 422, serializer: ActiveModel::Serializer::ErrorSerializer
         end
       end
 
@@ -31,6 +34,8 @@ module Api
 
         if user.update(user_params_for_update)
           render json: user, status: :ok
+        else
+          render json: user, status: 422, serializer: ActiveModel::Serializer::ErrorSerializer
         end
       end
 

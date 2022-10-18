@@ -23,6 +23,8 @@ module Api
 
         if shop.save
           render json: shop, status: :created
+        else
+          render json: shop, status: 422, serializer: ActiveModel::Serializer::ErrorSerializer
         end
       end
 
@@ -31,6 +33,8 @@ module Api
 
         if shop.update(shop_params)
           render json: shop, status: :ok
+        else
+          render json: shop, status: 422, serializer: ActiveModel::Serializer::ErrorSerializer
         end
       end
 
