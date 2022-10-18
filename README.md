@@ -1,10 +1,23 @@
-## Тестовое задание
-### Ruby on Rail Backend developer в Софт-Проект
+# Description
+API application for working with bonus cards. Test project
 
-## Links
+### Requirements
+```
+ruby '3.1.2'
+rails '7.0.4'
+postgresql '14.5'
+```
 
-- [тестовое](https://observant-algebra-ca4.notion.site/7337a24eb3c84efc8241cabc1b7df112)
-
-- [пригласить для проверки](https://github.com/AlexeyMatskevich)
-
-- [tg Алексей](https://t.me/Amourlive)
+1. After clone app, run bundler for install gems dependencies:
+```
+bundle install
+```
+4. Create a database and roll migrations:
+```
+bundle exec rails db:create
+bundle exec rails db:migrate
+```
+5. Finally, you can start the app:
+```
+bundle exec rails s
+```
