@@ -15,4 +15,6 @@ class CardResource < ApplicationResource
       scope.where(shop_id: value)
     end
   end
+
+  stat bonuses: [:sum]
 end
