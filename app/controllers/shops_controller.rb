@@ -28,14 +28,4 @@ class ShopsController < ApplicationController
       render jsonapi_errors: shop
     end
   end
-
-  def destroy
-    shop = ShopResource.find(params)
-
-    if shop.destroy
-      render jsonapi: { meta: {} }, status: 200
-    else
-      render jsonapi_errors: shop
-    end
-  end
 end
